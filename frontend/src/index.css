@@ -18,9 +18,20 @@
 }
 
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove blue focus outline from all interactive elements */
+a, button, .project-card, .nav-toggle, input, textarea, select, [role="button"] {
+  outline: none;
+}
+
+a:focus-visible, button:focus-visible, .project-card:focus-visible {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
 }
 
 html {
@@ -37,13 +48,13 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   width: 100%;
-}
+}                                                               
 
 #root {
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
-}
+} 
 
 a {
   text-decoration: none;
