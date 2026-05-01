@@ -59,7 +59,7 @@ const Navbar = () => {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} ref={navRef}>
       <div className="nav-content">
         <div className="nav-logo" ref={logoRef}>
-          <a href="/"><span className="accent-text">JB.</span></a>
+          <a href="/"><span className="accent-text">jaydip.dev</span></a>
         </div>
 
         <div className={`nav-links ${menuOpen ? 'open' : ''}`} ref={linksRef}>

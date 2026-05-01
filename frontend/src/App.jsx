@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import IdentityArchive from './components/IdentityArchive/IdentityArchive';
@@ -8,11 +8,19 @@ import Experience from './components/Experience/Experience';
 import Projects from './components/Projects/Projects';
 import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
+import Loader from './components/Loader/Loader';
 import './App.css';
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  const handleLoaderComplete = () => {
+    setLoading(false);
+  };
+
   return (
     <div className="app-container">
+      {loading && <Loader onComplete={handleLoaderComplete} />}
       <div className="floating-orb orb-1"></div>
       <div className="floating-orb orb-2"></div>
       <div className="floating-orb orb-3"></div>
