@@ -1,10 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Hero.css';
 import heroImg from '../../assets/hero.png';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Detect mobile device
+const isMobile = () => window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
 
 const stats = [
   { label: 'Experience', value: '1+ Year' },
@@ -80,99 +83,110 @@ const Hero = () => {
   const imageRef = useRef(null);
   const socialsRef = useRef([]);
   const cardsRef = useRef([]);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
+    const mobileCheck = isMobile();
+    setMobile(mobileCheck);
+
     const ctx = gsap.context(() => {
+      // Use simpler easing for mobile
+      const easeType = mobileCheck ? 'power2.out' : 'power3.out';
+
       // Initial hero entrance animation
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const tl = gsap.timeline({ defaults: { ease: easeType, force3D: true } });
 
       // Badge animation
       tl.fromTo(badgeRef.current,
-        { y: -30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 }
+        { y: mobileCheck ? -20 : -30, opacity: 0 },
+        { y: 0, opacity: 1, duration: mobileCheck ? 0.5 : 0.6 }
       );
 
       // Title animation
       tl.fromTo(titleRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
+        { y: mobileCheck ? 30 : 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: mobileCheck ? 0.6 : 0.8 },
         '-=0.3'
       );
 
       // Description animation
       tl.fromTo(descRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 },
+        { y: mobileCheck ? 20 : 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: mobileCheck ? 0.5 : 0.6 },
         '-=0.4'
       );
 
       // Buttons animation
       tl.fromTo(buttonsRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 },
+        { y: mobileCheck ? 20 : 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: mobileCheck ? 0.5 : 0.6 },
         '-=0.3'
       );
 
-      // Highlights animation
+      // Highlights animation - reduce stagger on mobile
       tl.fromTo(highlightsRef.current?.children || [],
-        { y: 20, opacity: 0, scale: 0.9 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.4, stagger: 0.1 },
+        { y: mobileCheck ? 15 : 20, opacity: 0, scale: mobileCheck ? 0.95 : 0.9 },
+        { y: 0, opacity: 1, scale: 1, duration: mobileCheck ? 0.35 : 0.4, stagger: mobileCheck ? 0.05 : 0.1 },
         '-=0.2'
       );
 
       // Stats animation
       tl.fromTo(statsRef.current?.children || [],
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 },
+        { y: mobileCheck ? 20 : 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: mobileCheck ? 0.4 : 0.5, stagger: mobileCheck ? 0.05 : 0.1 },
         '-=0.2'
       );
 
-      // Image container animation
+      // Image container animation - skip back.out on mobile
       tl.fromTo(imageRef.current,
         { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
+        { scale: 1, opacity: 1, duration: mobileCheck ? 0.6 : 0.8, ease: mobileCheck ? easeType : 'back.out(1.7)' },
         '-=0.6'
       );
 
       // Floating social icons animation
       tl.fromTo(socialsRef.current,
         { scale: 0, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' },
+        { scale: 1, opacity: 1, duration: mobileCheck ? 0.35 : 0.4, stagger: mobileCheck ? 0.05 : 0.1, ease: mobileCheck ? easeType : 'back.out(2)' },
         '-=0.4'
       );
 
       // Hero cards animation
       tl.fromTo(cardsRef.current,
-        { x: 50, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, stagger: 0.15 },
+        { x: mobileCheck ? 30 : 50, opacity: 0 },
+        { x: 0, opacity: 1, duration: mobileCheck ? 0.5 : 0.6, stagger: mobileCheck ? 0.1 : 0.15 },
         '-=0.3'
       );
 
-      // Floating animation for social icons
-      gsap.to(socialsRef.current, {
-        y: 'random(-10, 10)',
-        x: 'random(-5, 5)',
-        duration: 'random(2, 3)',
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: {
-          each: 0.2,
-          from: 'random'
-        }
-      });
+      // Only run floating animation on desktop
+      if (!mobileCheck) {
+        gsap.to(socialsRef.current, {
+          y: 'random(-10, 10)',
+          x: 'random(-5, 5)',
+          duration: 'random(2, 3)',
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          stagger: {
+            each: 0.2,
+            from: 'random'
+          }
+        });
+      }
 
-      // Parallax effect on scroll
-      gsap.to(visualRef.current, {
-        yPercent: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true
-        }
-      });
+      // Parallax effect - disabled on mobile for performance
+      if (!mobileCheck) {
+        gsap.to(visualRef.current, {
+          yPercent: 20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        });
+      }
 
     }, heroRef);
 

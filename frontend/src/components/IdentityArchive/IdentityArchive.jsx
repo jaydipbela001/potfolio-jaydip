@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './IdentityArchive.css';
 import aboutImg from '../../assets/img/about.png';
 import gsap from 'gsap';
@@ -6,23 +6,35 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Detect mobile device
+const isMobile = () => window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+
 const IdentityArchive = () => {
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const leftRef = useRef(null);
   const rightRef = useRef(null);
   const cardsRef = useRef([]);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
+    const mobileCheck = isMobile();
+    setMobile(mobileCheck);
+
+    // Use simpler easing for mobile
+    const easeType = mobileCheck ? 'power2.out' : 'power3.out';
+    const shorterDuration = mobileCheck ? 0.6 : 0.8;
+
     const ctx = gsap.context(() => {
       // Header animation
       gsap.fromTo(headerRef.current,
-        { y: 40, opacity: 0 },
+        { y: mobileCheck ? 30 : 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: shorterDuration,
+          ease: easeType,
+          force3D: true,
           scrollTrigger: {
             trigger: headerRef.current,
             start: 'top 85%',
@@ -31,14 +43,16 @@ const IdentityArchive = () => {
         }
       );
 
-      // Left side (photo) animation
+      // Left side (photo) animation - use vertical movement on mobile instead of horizontal
       gsap.fromTo(leftRef.current,
-        { x: -60, opacity: 0 },
+        { y: mobileCheck ? 40 : 0, x: mobileCheck ? 0 : -60, opacity: 0 },
         {
+          y: 0,
           x: 0,
           opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
+          duration: mobileCheck ? 0.7 : 0.9,
+          ease: easeType,
+          force3D: true,
           scrollTrigger: {
             trigger: leftRef.current,
             start: 'top 80%',
@@ -47,16 +61,17 @@ const IdentityArchive = () => {
         }
       );
 
-      // Cards stagger animation
+      // Cards stagger animation - shorter stagger on mobile
       gsap.fromTo(cardsRef.current,
-        { y: 50, opacity: 0, scale: 0.95 },
+        { y: mobileCheck ? 40 : 50, opacity: 0, scale: mobileCheck ? 0.97 : 0.95 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.6,
-          stagger: 0.15,
-          ease: 'power3.out',
+          duration: mobileCheck ? 0.5 : 0.6,
+          stagger: mobileCheck ? 0.08 : 0.15,
+          ease: easeType,
+          force3D: true,
           scrollTrigger: {
             trigger: rightRef.current,
             start: 'top 75%',
