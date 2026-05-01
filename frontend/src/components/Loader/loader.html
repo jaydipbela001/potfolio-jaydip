@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NeoLoader | Hyperium Core</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at 30% 10%, #03060a, #000000);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+
+        /* demo content that appears after loader */
+        .dashboard {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 30%, #0d141c, #020406);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 1.2s;
+            z-index: 10;
+        }
+
+        .dashboard.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .hero-card {
+            max-width: 700px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            background: rgba(0, 20, 25, 0.4);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: 48px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 212, 170, 0.1);
+            animation: fadeUp 0.8s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-card h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #A5F0D1, #00d4aa, #2bc9e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-card p {
+            color: #8aaebf;
+            margin: 1rem 0;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .tech-stack span {
+            background: #00d4aa15;
+            border: 1px solid #00d4aa40;
+            border-radius: 60px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ========== ULTRA ADVANCED LOADER WITH SMOOTH MULTI-LAYER ANIMATIONS ========== */
+        .hyperspace-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #010508;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: circle(150% at 50% 50%);
+            transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1);
+            font-family: 'Fira Code', monospace;
+            overflow: hidden;
+        }
+
+        /* particle wave canvas */
+        #particleCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.4;
+        }
+
+        /* dynamic grid background */
+        .grid-cyber {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 212, 170, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.08) 1px, transparent 1px);
+            background-size: 45px 45px;
+            animation: gridFlow 20s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridFlow {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(45px, 45px);
+            }
+        }
+
+        /* central core */
+        .loader-core {
+            position: relative;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+        }
+
+        /* hyper ring system (more rings, smoother) */
+        .hyper-rings {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .h-ring {
+            position: absolute;
+            border-radius: 50%;
+            border-style: solid;
+            border-width: 2px;
+            will-change: transform, opacity;
+            filter: drop-shadow(0 0 8px rgba(0, 255, 200, 0.3));
+        }
+
+        .ring-prime {
+            width: 100%;
+            height: 100%;
+            border-top: 3px solid #00ffcc;
+            border-right: 2px solid rgba(0, 255, 204, 0.15);
+            border-bottom: 2px solid rgba(0, 255, 204, 0.05);
+            border-left: 1px solid rgba(0, 255, 204, 0.2);
+            animation: spinSmooth 12s linear infinite, ringPulse 3s ease-in-out infinite;
+        }
+
+        .ring-secondary {
+            width: 82%;
+            height: 82%;
+            top: 9%;
+            left: 9%;
+            border-bottom: 3px solid #2bc9ff;
+            border-left: 2px solid rgba(43, 201, 255, 0.2);
+            border-top: 1px solid rgba(43, 201, 255, 0.1);
+            animation: spinReverse 9s linear infinite, glowShift 2.5s alternate infinite;
+        }
+
+        .ring-tertiary {
+            width: 64%;
+            height: 64%;
+            top: 18%;
+            left: 18%;
+            border-top: 2px solid #b886ff;
+            border-right: 2px solid rgba(184, 134, 255, 0.3);
+            animation: spinSmooth 7s linear infinite, scaleFloat 2s ease-in-out infinite alternate;
+        }
+
+        .ring-quantum {
+            width: 46%;
+            height: 46%;
+            top: 27%;
+            left: 27%;
+            border: 2px dashed rgba(0, 230, 200, 0.7);
+            animation: spinDashQuantum 14s linear infinite, flickerGlow 1.8s infinite alternate;
+        }
+
+        .ring-pulse-orb {
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.1) 0%, transparent 70%);
+            border: none;
+            animation: orbPulseLarge 2.2s infinite alternate;
+        }
+
+        @keyframes spinSmooth {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spinReverse {
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes spinDashQuantum {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes ringPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 4px #00ffcc);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 18px #00ffcc);
+            }
+        }
+
+        @keyframes glowShift {
+            0% {
+                border-bottom-color: #2bc9ff;
+                opacity: 0.8;
+            }
+
+            100% {
+                border-bottom-color: #00ffaa;
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleFloat {
+            0% {
+                transform: scale(0.98);
+            }
+
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes flickerGlow {
+            0% {
+                opacity: 0.5;
+                border-color: #00e6c3;
+            }
+
+            100% {
+                opacity: 1;
+                border-color: #adffdf;
+            }
+        }
+
+        @keyframes orbPulseLarge {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        /* stellar glitch image container */
+        .avatar-neo {
+            position: relative;
+            margin-top: -20px;
+            z-index: 60;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+        }
+
+        .avatar-core {
+            width: 135px;
+            height: 135px;
+            background: linear-gradient(145deg, #0a1f1a, #021010);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #00efc3;
+            box-shadow: 0 0 45px rgba(0, 239, 195, 0.5), inset 0 0 15px rgba(0, 239, 195, 0.2);
+            transition: all 0.2s;
+            overflow: hidden;
+            backdrop-filter: blur(1px);
+        }
+
+        .avatar-image {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px #00efb0);
+            transition: transform 0.2s;
+        }
+
+        .fallback-svg {
+            display: none;
+            width: 70px;
+            height: 70px;
+            color: #00efc3;
+        }
+
+        .glow-radial {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 230, 180, 0.4), transparent 70%);
+            animation: auraWave 2.4s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes auraWave {
+            0% {
+                opacity: 0.3;
+                transform: scale(0.96);
+            }
+
+            100% {
+                opacity: 0.8;
+                transform: scale(1.12);
+            }
+        }
+
+        /* orbiting satellites smoother */
+        .satellite-orbit {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 45;
+        }
+
+        .sat {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            background: rgba(2, 15, 18, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            border: 1px solid #0affd0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 22px rgba(0, 255, 200, 0.2);
+            transition: all 0.1s linear;
+        }
+
+        .sat svg {
+            width: 26px;
+            height: 26px;
+            stroke: #0affd0;
+            fill: none;
+            stroke-width: 1.6;
+        }
+
+        .s0 {
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .s1 {
+            top: 50%;
+            right: -22px;
+            transform: translateY(-50%);
+        }
+
+        .s2 {
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .s3 {
+            top: 50%;
+            left: -22px;
+            transform: translateY(-50%);
+        }
+
+        /* code rain 3d dynamic */
+        .code-stream {
+            position: absolute;
+            display: flex;
+            gap: 14px;
+            flex-direction: column;
+            opacity: 0.7;
+        }
+
+        .stream-left {
+            left: 4%;
+            top: 30%;
+        }
+
+        .stream-right {
+            right: 4%;
+            top: 30%;
+        }
+
+        .code-stroke {
+            height: 3px;
+            background: linear-gradient(90deg, #00ecb0, rgba(0, 236, 176, 0.1));
+            border-radius: 4px;
+            width: 110px;
+            animation: linePulse 1.6s infinite alternate;
+        }
+
+        .code-stroke.right-stroke {
+            background: linear-gradient(270deg, #00ecb0, rgba(0, 236, 176, 0.05));
+            margin-left: auto;
+        }
+
+        @keyframes linePulse {
+            0% {
+                opacity: 0.4;
+                width: 70px;
+            }
+
+            100% {
+                opacity: 1;
+                width: 100px;
+            }
+        }
+
+        /* glitch text with advanced smoothness */
+        .status-glow {
+            text-align: center;
+        }
+
+        .glitch-word {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #baffed;
+            text-shadow: 0 0 12px #00e6c3;
+            position: relative;
+            display: inline-block;
+            transition: text-shadow 0.2s;
+        }
+
+        .glitch-word::before,
+        .glitch-word::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-word::before {
+            color: #ff3f6b;
+            animation: smoothGlitch1 2.4s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+
+        .glitch-word::after {
+            color: #32f0ff;
+            animation: smoothGlitch2 2.8s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes smoothGlitch1 {
+
+            0%,
+            100% {
+                transform: translate(0);
+            }
+
+            25% {
+                transform: translate(-1.2px, 1.2px);
+            }
+
+            50% {
+                transform: translate(1px, -0.8px);
+            }
+
+            75% {
+                transform: translate(-0.7px, -0.5px);
+            }
+        }
+
+        @keyframes smoothGlitch2 {
+
+            0%,
+            100% {
+                transform: translate(0);
+            }
+
+            30% {
+                transform: translate(1.3px, -1px);
+            }
+
+            60% {
+                transform: translate(-0.9px, 1.1px);
+            }
+
+            85% {
+                transform: translate(0.5px, -0.5px);
+            }
+        }
+
+        .sub-status {
+            font-size: 0.75rem;
+            color: #6b8d9c;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        /* hyper progress bar with flowing particles */
+        .hyper-progress {
+            width: 310px;
+            margin-top: 10px;
+        }
+
+        .progress-track-sleek {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-beam {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffc3, #10c9ff, #00ffc3);
+            background-size: 200% 100%;
+            animation: shimmerMove 1.8s infinite linear;
+            border-radius: 20px;
+            transition: width 0.08s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        @keyframes shimmerMove {
+            0% {
+                background-position: 0% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .percent-digit {
+            color: #2effcf;
+            font-size: 1.1rem;
+        }
+
+        .load-message {
+            color: #b0d4dd;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* corner futuristic */
+        .corner-neo {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            border: 1.5px solid rgba(0, 212, 170, 0.5);
+            filter: drop-shadow(0 0 6px #00ffcc40);
+        }
+
+        .corner-tl {
+            top: 25px;
+            left: 25px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-tr {
+            top: 25px;
+            right: 25px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bl {
+            bottom: 25px;
+            left: 25px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-br {
+            bottom: 25px;
+            right: 25px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* responsiveness */
+        @media (max-width: 680px) {
+            .hyper-rings {
+                width: 260px;
+                height: 260px;
+            }
+
+            .avatar-core {
+                width: 110px;
+                height: 110px;
+            }
+
+            .avatar-image {
+                width: 75px;
+                height: 75px;
+            }
+
+            .sat {
+                width: 38px;
+                height: 38px;
+                border-radius: 12px;
+            }
+
+            .sat svg {
+                width: 20px;
+            }
+
+            .hyper-progress {
+                width: 250px;
+            }
+
+            .glitch-word {
+                font-size: 1.1rem;
+                letter-spacing: 3px;
+            }
+
+            .code-stroke {
+                width: 70px;
+            }
+
+            .stream-left,
+            .stream-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="hyperspaceLoader" class="hyperspace-loader">
+        <canvas id="particleCanvas"></canvas>
+        <div class="grid-cyber"></div>
+
+        <div class="loader-core">
+            <!-- Hyper-dimensional rings -->
+            <div class="hyper-rings">
+                <div class="h-ring ring-pulse-orb"></div>
+                <div class="h-ring ring-prime" id="ringPrime"></div>
+                <div class="h-ring ring-secondary" id="ringSec"></div>
+                <div class="h-ring ring-tertiary" id="ringTert"></div>
+                <div class="h-ring ring-quantum"></div>
+
+                <!-- Floating tech orbs with smooth orbital motion -->
+                <div class="satellite-orbit" id="satOrbit">
+                    <div class="sat s0"><svg viewBox="0 0 24 24">
+                            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" />
+                            <path d="M12 22V12" />
+                            <path d="M12 12L3 7" />
+                            <path d="M12 12l9-5" />
+                        </svg></div>
+                    <div class="sat s1"><svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6z" />
+                        </svg></div>
+                    <div class="sat s2"><svg viewBox="0 0 24 24">
+                            <ellipse cx="12" cy="5" rx="9" ry="3" />
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                            <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" />
+                        </svg></div>
+                    <div class="sat s3"><svg viewBox="0 0 24 24">
+                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+                        </svg></div>
+                </div>
+            </div>
+
+            <!-- avatar image zone -->
+            <div class="avatar-neo">
+                <div class="glitch-wrapper" id="glitchAvatarBox">
+                    <div class="avatar-core" id="avatarCore">
+                        <img id="loaderAvatar" class="avatar-image"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%2300ffcc20' stroke='%2300ffcc' stroke-width='2'/%3E%3Cpath fill='%2300ffcc' d='M32,44 L68,44 L68,60 L32,60 Z'/%3E%3Ccircle cx='40' cy='37' r='4.5' fill='white'/%3E%3Ccircle cx='60' cy='37' r='4.5' fill='white'/%3E%3C/svg%3E"
+                            alt="avatar">
+                        <div class="fallback-svg" id="fallbackAvatarIcon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="glow-radial"></div>
+                </div>
+            </div>
+
+            <!-- dynamic side code streams -->
+            <div class="code-stream stream-left" id="leftStream">
+                <div class="code-stroke"></div>
+                <div class="code-stroke"></div>
+                <div class="code-stroke"></div>
+                <div class="code-stroke"></div>
+            </div>
+            <div class="code-stream stream-right" id="rightStream">
+                <div class="code-stroke right-stroke"></div>
+                <div class="code-stroke right-stroke"></div>
+                <div class="code-stroke right-stroke"></div>
+                <div class="code-stroke right-stroke"></div>
+            </div>
+
+            <div class="status-glow">
+                <div class="glitch-word" id="dynamicGlitchText" data-text="BOOT">BOOT</div>
+                <div class="sub-status">Jaydip Bela · Backend Singularity</div>
+            </div>
+
+            <div class="hyper-progress">
+                <div class="progress-track-sleek">
+                    <div class="progress-beam" id="progressBeam"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="percentValue" class="percent-digit">0%</span>
+                    <span id="loadDescription" class="load-message">initializing core...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="corner-neo corner-tl"></div>
+        <div class="corner-neo corner-tr"></div>
+        <div class="corner-neo corner-bl"></div>
+        <div class="corner-neo corner-br"></div>
+    </div>
+
+    <div id="mainDashboard" class="dashboard">
+        <div class="hero-card">
+            <h1>⚡ Jaydip Bela</h1>
+            <p>Backend Architect · Node.js · NestJS · Cloud-Native</p>
+            <p style="font-size: 0.9rem;">Scalable APIs · Real-time systems · Clean architecture</p>
+            <div class="tech-stack"><span>🔷 NestJS</span><span>🚀 Socket.IO</span><span>💾 PostgreSQL</span><span>☁️
+                    AWS/Cloud</span></div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // SMOOTH LOADER WITH ADVANCED ANIMATIONS + PARTICLES + ORBIT SMOOTH
+            const loaderDiv = document.getElementById('hyperspaceLoader');
+            const dashboard = document.getElementById('mainDashboard');
+            const progressBeam = document.getElementById('progressBeam');
+            const percentSpan = document.getElementById('percentValue');
+            const loadDescSpan = document.getElementById('loadDescription');
+            const glitchSpan = document.getElementById('dynamicGlitchText');
+
+            let progress = 0;
+            const textStages = ['BOOT', 'LOAD ASSETS', 'COMPILE CORE', 'OPTIMIZE', 'READY'];
+
+            // smooth increment
+            const interval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    if (loadDescSpan) loadDescSpan.innerText = 'SYNC COMPLETE';
+                    if (percentSpan) percentSpan.innerText = '100%';
+                    if (progressBeam) progressBeam.style.width = '100%';
+                    setTimeout(() => {
+                        if (loaderDiv) {
+                            loaderDiv.style.clipPath = 'circle(0% at 50% 50%)';
+                            setTimeout(() => {
+                                loaderDiv.style.display = 'none';
+                                dashboard.classList.add('visible');
+                            }, 1100);
+                        }
+                    }, 300);
+                    return;
+                }
+                progress += Math.random() * 3 + 1.8;
+                if (progress > 100) progress = 100;
+                const pct = Math.floor(progress);
+                if (progressBeam) progressBeam.style.width = `${progress}%`;
+                if (percentSpan) percentSpan.innerText = `${pct}%`;
+
+                let idx = 0;
+                if (pct >= 95) idx = 4;
+                else if (pct >= 70) idx = 3;
+                else if (pct >= 40) idx = 2;
+                else if (pct >= 15) idx = 1;
+                else idx = 0;
+                const label = textStages[idx];
+                if (glitchSpan && glitchSpan.innerText !== label) {
+                    glitchSpan.innerText = label;
+                    glitchSpan.setAttribute('data-text', label);
+                }
+                if (loadDescSpan) {
+                    if (pct === 100) loadDescSpan.innerText = 'launching...';
+                    else if (pct > 75) loadDescSpan.innerText = 'stabilizing quantum field';
+                    else if (pct > 40) loadDescSpan.innerText = 'compiling neural interface';
+                    else loadDescSpan.innerText = 'spooling hyperloop';
+                }
+            }, 60);
+
+            // --- PARTICLE ANIMATION (smooth fluid field) ---
+            const canvas = document.getElementById('particleCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+            class FlowParticle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.6;
+                    this.vy = (Math.random() - 0.5) * 0.4 + 0.2;
+                    this.size = Math.random() * 2.2 + 0.8;
+                    this.alpha = Math.random() * 0.4 + 0.2;
+                    this.color = `hsl(${160 + Math.random() * 30}, 85%, 65%)`;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < -20) this.x = width + 10;
+                    if (this.x > width + 20) this.x = -10;
+                    if (this.y < -20) this.y = height + 10;
+                    if (this.y > height + 20) this.y = -20;
+                    this.alpha = 0.3 + Math.sin(Date.now() * 0.002 + this.x) * 0.2;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = "#00ffcc";
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                const particleCount = Math.min(180, Math.floor(width * height / 7000));
+                for (let i = 0; i < particleCount; i++) particles.push(new FlowParticle());
+            }
+
+            function animateParticles() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, width, height);
+                for (let p of particles) {
+                    p.update();
+                    p.draw();
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            resizeCanvas();
+            initParticles();
+            animateParticles();
+
+            // SMOOTH ORBIT SATELLITES (extra dynamic motion)
+            const satellites = document.querySelectorAll('.sat');
+            let orbitAngleGlobal = 0;
+            function animateOrbitSatellites() {
+                orbitAngleGlobal += 0.012;
+                const baseRadius = 24;
+                satellites.forEach((sat, idx) => {
+                    const angleOffset = idx * Math.PI / 2;
+                    const xOff = Math.cos(orbitAngleGlobal + angleOffset) * baseRadius * 0.7;
+                    const yOff = Math.sin(orbitAngleGlobal + angleOffset) * baseRadius * 0.5;
+                    sat.style.transform = `translate(${xOff}px, ${yOff}px) scale(${1 + Math.sin(orbitAngleGlobal * 2 + idx) * 0.05})`;
+                    sat.style.transition = 'transform 0.05s linear';
+                });
+                requestAnimationFrame(animateOrbitSatellites);
+            }
+            animateOrbitSatellites();
+
+            // smooth ring extra wavy motion
+            const ringsList = [document.getElementById('ringPrime'), document.getElementById('ringSec'), document.getElementById('ringTert')];
+            let waveTime = 0;
+            function extraRingWaves() {
+                waveTime += 0.018;
+                if (ringsList[0]) ringsList[0].style.transform = `rotate(${waveTime * 35}deg) scale(${1 + Math.sin(waveTime) * 0.02})`;
+                if (ringsList[1]) ringsList[1].style.transform = `rotate(${-waveTime * 28}deg) scale(${1 + Math.cos(waveTime * 0.9) * 0.015})`;
+                if (ringsList[2]) ringsList[2].style.transform = `rotate(${waveTime * 22}deg) scale(${1 + Math.sin(waveTime * 1.2) * 0.025})`;
+                requestAnimationFrame(extraRingWaves);
+            }
+            extraRingWaves();
+
+            // GLITCH MICRO-SHAKE for avatar
+            const avatarBox = document.getElementById('glitchAvatarBox');
+            setInterval(() => {
+                if (!loaderDiv || loaderDiv.style.display === 'none') return;
+                if (Math.random() > 0.65) {
+                    avatarBox.style.transform = `translate(${Math.random() * 2 - 1}px, ${Math.random() * 2 - 1}px)`;
+                    setTimeout(() => { if (avatarBox) avatarBox.style.transform = ''; }, 65);
+                }
+            }, 800);
+
+            // image fallback handling
+            const avatarImgDom = document.getElementById('loaderAvatar');
+            const fallbackDiv = document.getElementById('fallbackAvatarIcon');
+            if (avatarImgDom) {
+                avatarImgDom.onerror = () => {
+                    avatarImgDom.style.display = 'none';
+                    if (fallbackDiv) fallbackDiv.style.display = 'flex';
+                };
+            }
+
+            // subtle pulse on avatar image smooth
+            let scaleDir = 1;
+            let scaleVal = 1;
+            function pulseAvatar() {
+                if (!avatarImgDom) return;
+                scaleVal += scaleDir * 0.0025;
+                if (scaleVal >= 1.04) scaleDir = -1;
+                if (scaleVal <= 0.97) scaleDir = 1;
+                avatarImgDom.style.transform = `scale(${scaleVal})`;
+                requestAnimationFrame(pulseAvatar);
+            }
+            pulseAvatar();
+
+            // dynamic code stroke fluid animation (already smooth via CSS)
+            const allStrokes = document.querySelectorAll('.code-stroke');
+            setInterval(() => {
+                allStrokes.forEach((stroke, idx) => {
+                    if (Math.random() > 0.6) {
+                        stroke.style.opacity = '1';
+                        stroke.style.width = '100px';
+                        setTimeout(() => { if (stroke) stroke.style.width = (idx % 2 === 0 ? '75px' : '95px'); }, 150);
+                    }
+                });
+            }, 550);
+
+        })();
+    </script>
+</body>
+
+</html>

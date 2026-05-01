@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 import gsap from 'gsap';
+import { Link } from 'react-scroll';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -48,11 +49,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'About', href: 'about' },
+    { name: 'Skills', href: 'skills' },
+    { name: 'Projects', href: 'projects' },
+    { name: 'Experience', href: 'experience' },
+    { name: 'Contact', href: 'contact' },
   ];
 
   return (
@@ -66,13 +67,29 @@ const Navbar = () => {
           <ol>
             {navLinks.map((link, index) => (
               <li key={index}>
-                <a href={link.href} onClick={() => setMenuOpen(false)}>
+                <Link
+                  to={link.href}
+                  smooth={true}
+                  duration={500}
+                  offset={-80}
+                  onClick={() => setMenuOpen(false)}
+                >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ol>
-          <a href="#contact" className="hire-button" ref={hireRef} onClick={() => setMenuOpen(false)}>Hire Me</a>
+          <Link
+            to="contact"
+            smooth={true}
+            duration={500}
+            offset={-80}
+            className="hire-button"
+            ref={hireRef}
+            onClick={() => setMenuOpen(false)}
+          >
+            Hire Me
+          </Link>
         </div>
 
         <div className={`nav-toggle ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
