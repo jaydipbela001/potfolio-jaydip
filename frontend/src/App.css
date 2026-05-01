@@ -1,0 +1,78 @@
+/* App.css - Main layout wrapper styles */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: 
+    radial-gradient(ellipse at 10% 20%, rgba(0, 212, 170, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(0, 102, 255, 0.03) 0%, transparent 50%),
+    var(--bg-dark);
+  position: relative;
+}
+
+/* Floating Orbs */
+.floating-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -30px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.9); }
+  75% { transform: translate(20px, 30px) scale(1.05); }
+}
+
+main {
+  flex: 1;
+  padding-top: 80px; /* Space for fixed navbar */
+}
+
+/* Geometric Corner Accents */
+.corner-accent {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(0, 212, 170, 0.2);
+}
+
+.corner-accent.top-left {
+  top: 20px;
+  left: 20px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner-accent.top-right {
+  top: 20px;
+  right: 20px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner-accent.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  border-right: none;
+  border-top: none;
+}
+
+.corner-accent.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Glassmorphism Card Effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+}

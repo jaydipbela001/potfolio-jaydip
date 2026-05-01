@@ -1,0 +1,28 @@
+.footer {
+  padding: 40px;
+  text-align: center;
+  background-color: var(--bg-dark);
+  border-top: 1px solid var(--bg-light-navy);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-content {
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.footer-content p {
+  margin-bottom: 5px;
+}
+
+.tech-stack {
+  font-size: 12px;
+}
+
+.copyright {
+  margin-top: 15px;
+  font-size: 11px;
+  opacity: 0.7;
+}

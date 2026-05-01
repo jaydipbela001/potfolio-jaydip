@@ -1,0 +1,388 @@
+/* Experience Section */
+.experience-section {
+  width: 100%;
+  padding: 100px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: 
+    radial-gradient(ellipse at 50% 30%, rgba(0, 212, 170, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 70%, rgba(0, 102, 255, 0.04) 0%, transparent 45%);
+  position: relative;
+}
+
+/* Decorative Elements */
+.experience-section::before {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 40px;
+  width: 60px;
+  height: 60px;
+  background-image: 
+    radial-gradient(circle, rgba(0, 212, 170, 0.15) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.experience-section::after {
+  content: '';
+  position: absolute;
+  bottom: 60px;
+  right: 50px;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-green));
+  opacity: 0.4;
+}
+
+/* Section Header */
+.experience-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.experience-header h2 {
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.experience-header .highlight {
+  color: var(--accent-green);
+}
+
+/* Timeline Container */
+.experience-timeline {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Timeline Line */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent-green);
+  opacity: 0.3;
+  transform: translateX(-50%);
+}
+
+/* Experience Item - 3 Column Layout */
+.experience-item {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 0;
+  align-items: start;
+  position: relative;
+}
+
+/* Left Side */
+.exp-left {
+  text-align: right;
+  padding-right: 30px;
+}
+
+/* Date */
+.exp-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.date-separator {
+  margin: 0 6px;
+  opacity: 0.7;
+}
+
+/* Company */
+.exp-company {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.company-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.company-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-green);
+}
+
+/* Meta Info */
+.company-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}
+
+.meta-item {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--accent-green);
+}
+
+/* Middle - Timeline Connector */
+.exp-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+
+.timeline-dot {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--accent-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 102, 255, 0.1));
+  box-shadow: 0 0 25px rgba(0, 212, 170, 0.3), inset 0 0 10px rgba(0, 212, 170, 0.1);
+  z-index: 2;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.timeline-dot::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 170, 0.2);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.timeline-dot svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-green);
+}
+
+/* Connector Line for dot */
+.exp-connector::after {
+  content: '';
+  width: 2px;
+  flex: 1;
+  background: var(--accent-green);
+  opacity: 0.3;
+  margin-top: 10px;
+}
+
+/* Bottom dot on line */
+.exp-connector::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  opacity: 0.5;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Right Side */
+.exp-right {
+  padding-left: 30px;
+  padding-top: 20px;
+}
+
+.exp-role {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0 0 12px 0;
+  letter-spacing: 0.5px;
+}
+
+.exp-description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .experience-section {
+    padding: 80px 20px;
+  }
+
+  .experience-timeline {
+    padding-left: 40px;
+  }
+
+  .timeline-line {
+    display: none;
+  }
+
+  .experience-item {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .exp-left {
+    text-align: left;
+    padding-right: 0;
+    padding-left: 40px;
+  }
+
+  .exp-company {
+    justify-content: flex-start;
+  }
+
+  .company-meta {
+    align-items: flex-start;
+    margin-left: 24px;
+  }
+
+  .exp-connector {
+    position: absolute;
+    left: -20px;
+    top: 0;
+    height: 100%;
+    width: 40px;
+  }
+
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+  }
+
+  .timeline-dot svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .exp-connector::before {
+    display: none;
+  }
+
+  .exp-right {
+    padding-left: 40px;
+    padding-top: 0;
+  }
+
+  .company-name {
+    font-size: 17px;
+  }
+
+  .exp-role {
+    font-size: 18px;
+  }
+
+  .exp-description {
+    font-size: 14px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .experience-section {
+    padding: 60px 15px;
+  }
+
+  .experience-header {
+    margin-bottom: 30px;
+  }
+
+  .experience-header h2 {
+    font-size: 24px;
+  }
+
+  .experience-timeline {
+    padding-left: 35px;
+  }
+
+  .timeline-line {
+    left: 10px;
+  }
+
+  .exp-left,
+  .exp-right {
+    padding-left: 30px;
+  }
+
+  .exp-connector {
+    width: 30px;
+  }
+
+  .timeline-dot {
+    width: 28px;
+    height: 28px;
+  }
+
+  .timeline-dot svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .exp-date {
+    font-size: 10px;
+  }
+
+  .company-name {
+    font-size: 16px;
+  }
+
+  .company-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .meta-item {
+    font-size: 10px;
+  }
+
+  .meta-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .exp-role {
+    font-size: 16px;
+  }
+
+  .exp-description {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
