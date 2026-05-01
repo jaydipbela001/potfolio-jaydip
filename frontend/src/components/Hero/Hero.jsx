@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Hero.css';
-import heroImg from '../../assets/hero.png';
+import heroImg from '../../assets/img/jaydip.png';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Detect mobile device
+// Detect mobile device 
 const isMobile = () => window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
 
 const stats = [
@@ -269,20 +269,20 @@ const Hero = () => {
             ))}
           </div>
 
-          <div className="hero-card hero-card-top" ref={el => cardsRef.current[0] = el}>
+          {/* <div className="hero-card hero-card-top" ref={el => cardsRef.current[0] = el}>
             <span className="hero-card-label">Current Focus</span>
             <strong>Clean architecture for APIs</strong>
             <p>Structured backend systems with performance and maintainability in mind.</p>
-          </div>
+          </div> */}
 
-          <div className="hero-card hero-card-bottom" ref={el => cardsRef.current[1] = el}>
+          {/* <div className="hero-card hero-card-bottom" ref={el => cardsRef.current[1] = el}>
             <span className="hero-card-label">Availability</span>
             <strong>Open for freelance and full-time roles</strong>
             <div className="hero-card-status">
               <span className="status-dot"></span>
               <span>Active and ready to collaborate</span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="profile-card" ref={el => cardsRef.current[2] = el}>

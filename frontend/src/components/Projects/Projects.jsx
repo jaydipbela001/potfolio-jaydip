@@ -10,29 +10,22 @@ const Projects = () => {
   const headerRef = useRef(null);
   const cardsRef = useRef([]);
   const modalRef = useRef(null);
+  const scrollPositionRef = useRef(0);
   
   const [selectedProject, setSelectedProject] = useState(null);
 
   // Lock body scroll when modal is open
   useEffect(() => {
     if (selectedProject) {
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = `-${window.scrollY}px`;
     } else {
-      const scrollY = document.body.style.top;
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
     return () => {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
     };
   }, [selectedProject]);
 
