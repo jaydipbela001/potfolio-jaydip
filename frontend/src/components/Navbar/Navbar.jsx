@@ -25,24 +25,31 @@ const Navbar = () => {
       const tl = gsap.timeline({ delay: 0.2 });
 
       // Logo animation
-      tl.fromTo(logoRef.current,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
-      );
+      if (logoRef.current) {
+        tl.fromTo(logoRef.current,
+          { y: -20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+        );
+      }
 
       // Nav links stagger animation
-      tl.fromTo(linksRef.current?.querySelectorAll('li') || [],
-        { y: -15, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'power2.out' },
-        '-=0.2'
-      );
+      const navItems = linksRef.current?.querySelectorAll('li') || [];
+      if (navItems.length > 0) {
+        tl.fromTo(navItems,
+          { y: -15, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'power2.out' },
+          '-=0.2'
+        );
+      }
 
       // Hire button animation
-      tl.fromTo(hireRef.current,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' },
-        '-=0.3'
-      );
+      if (hireRef.current) {
+        tl.fromTo(hireRef.current,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' },
+          '-=0.3'
+        );
+      }
     }, navRef);
 
     return () => ctx.revert();

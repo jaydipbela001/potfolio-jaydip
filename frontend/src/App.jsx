@@ -9,18 +9,22 @@ import Projects from './components/Projects/Projects';
 import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
 import Loader from './components/Loader/Loader';
+import PremiumCursor from './components/PremiumCursor/PremiumCursor';
+import BackgroundDecorations from './components/BackgroundDecorations/BackgroundDecorations';
 import './App.css';
 
 function App() {
   const [loading, setLoading] = useState(true);
 
   const handleLoaderComplete = () => {
-    setLoading(false);
+    setLoading(false); 
   };
 
   return (
     <div className="app-container">
       {loading && <Loader onComplete={handleLoaderComplete} />}
+      {!loading && <PremiumCursor />}
+      {!loading && <BackgroundDecorations />}
       <div className="floating-orb orb-1"></div>
       <div className="floating-orb orb-2"></div>
       <div className="floating-orb orb-3"></div>

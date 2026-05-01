@@ -1,0 +1,45 @@
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00d4aa;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  box-shadow: 0 0 20px #00d4aa, 0 0 40px rgba(0, 212, 170, 0.6);
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 212, 170, 0.5);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  background: rgba(0, 212, 170, 0.05);
+  transition: transform 0.2s ease-out;
+}
+
+/* Hide default cursor on desktop */
+@media (min-width: 1024px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Show default cursor on mobile and smaller screens */
+@media (max-width: 1023px) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}

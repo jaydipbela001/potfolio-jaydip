@@ -10,7 +10,7 @@
   isolation: isolate;
 }
 
-.hero-section::before {
+/* .hero-section::before {
   content: "";
   position: absolute;
   inset: 40px 0 auto;
@@ -21,7 +21,7 @@
   filter: blur(18px);
   z-index: -1;
   pointer-events: none;
-}
+} */
 
 /* Left Content */
 .hero-content {
