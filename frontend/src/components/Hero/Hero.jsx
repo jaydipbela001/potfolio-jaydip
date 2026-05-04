@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Hero.css';
 import heroImg from '../../assets/img/jaydip.png';
 import gsap from 'gsap';
@@ -7,7 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 // Detect mobile device 
-const isMobile = () => window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+const isMobile = () => window.innerWidth < 768;
 
 const stats = [
   { label: 'Experience', value: '1+ Year' },
@@ -83,11 +83,9 @@ const Hero = () => {
   const imageRef = useRef(null);
   const socialsRef = useRef([]);
   const cardsRef = useRef([]);
-  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
     const mobileCheck = isMobile();
-    setMobile(mobileCheck);
 
     const ctx = gsap.context(() => {
       // Use simpler easing for mobile
@@ -240,6 +238,10 @@ const Hero = () => {
               <span className="info-value">{item.value}</span>
             </div>
           ))}
+        </div>
+
+        <div className="hero-mobile-image">
+          <img src={heroImg} alt="Jaydip Bela" />
         </div>
       </div>
 

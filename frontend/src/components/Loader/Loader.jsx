@@ -22,6 +22,19 @@ const Loader = ({ onComplete }) => {
   const textStages = ['BOOT', 'LOAD ASSETS', 'COMPILE CORE', 'OPTIMIZE', 'READY'];
   const loadMessages = ['spooling hyperloop', 'compiling neural interface', 'stabilizing quantum field', 'calibrating systems', 'launching...'];
 
+  // Lock body scroll when loader is active
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.touchAction = '';
+    };
+  }, []);
+
   // Particle System
   const initParticles = useCallback((ctx, width, height) => {
     const particles = [];
